@@ -1,17 +1,21 @@
-# Validation - 2026-10-06
+# Проверки
 
-Windows / Python 3.12 / Node 22 / pnpm 11.19.0. TypeScript checks and production builds passed locally.
-All examples use synthetic data. Local tests do not imply successful hosted CI or quality on real customer data.
+Проверено 6 октября 2026 на Windows: Python 3.12, Node.js 22 и pnpm 11.19.0.
 
-3 tests passed, including a real FFmpeg render with punctuation in a caption, MP4 download, 540×960 dimensions, audio track and duration. A separate 3-second live render produced a 35,241-byte MP4. Generated source is a colour/geometry clip, not a client asset.
+## Функциональность
 
-Docker image built and started locally as a non-root user. Static UI and health endpoint returned successfully. The container generated its synthetic MP4 sample successfully.
+- 3 серверных теста, включая реальный рендер FFmpeg: титр со знаками пунктуации, скачивание MP4, разрешение 540 × 960, звуковая дорожка и длина файла.
+- После обновления исходного видео проверен Docker Compose: настоящий двухсекундный MP4 размером 258 007 байт.
+- В интерфейсе один исходный клип, восемь разных кадров на временной шкале и форма звука, рассчитанная по исходной дорожке.
+- Видеофрагмент «Синтел» используется по CC BY 3.0. Оригинальная звуковая дорожка заменена синтезированной.
+- В Linux используется системный FFmpeg с drawtext. При первом контейнерном тесте встроенная сборка imageio не содержала этого фильтра; выбор исполняемого файла исправлен и проверен настоящим рендером.
 
-## Selected interface verification
+## Сборка и запуск
 
-Final TypeScript/Vite build passed. Browser review at measured 1454 × 818 desktop and 443 px mobile width found no horizontal page overflow. Escape closes project dialogs. `preview.png` is an actual local application screenshot, not a design mockup.
-A real browser export produced a 5-second, 540 × 960 MP4. Thumbnails and audio peaks are derived from the supplied 8-second source.
+- TypeScript и сборка Vite прошли.
+- Команды Docker Compose из README выполнены: контейнер запустился, API health вернул `ok`, интерфейс доступен на порту 8000.
+- GitHub Actions запускает серверные тесты, проверку TypeScript, сборку интерфейса и Docker-образа. Актуальный результат доступен по значку проверок в README.
 
-## Linux rendering
+## Интерфейс
 
-The bundled Linux imageio FFmpeg lacked `drawtext` in a real container run. The Docker image and CI now install distro FFmpeg and select it explicitly; native runs prefer an installed FFmpeg. Final Docker smoke test produced and downloaded a real 2-second MP4 with a caption. The 3 backend tests also passed again on Windows.
+Превью сделаны с работающего приложения. Проверены ширины 1454 и 443 пикселя: горизонтального переполнения страницы нет. В режиме снимка отсутствуют полосы прокрутки.

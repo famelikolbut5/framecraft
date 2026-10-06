@@ -31,7 +31,9 @@ def sample():
     output = ROOT/'sample.mp4'
     with LOCK:
         if not output.exists():
-            bundled = Path(__file__).resolve().parents[1]/'dist'/'sample.mp4'
+            project = Path(__file__).resolve().parents[1]
+            bundled = project/'dist'/'sample.mp4'
+            if not bundled.exists(): bundled = project/'public'/'sample.mp4'
             if bundled.exists():
                 shutil.copyfile(bundled,output)
                 return output

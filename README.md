@@ -1,61 +1,52 @@
 # Framecraft
 
-Turn a local video into a captioned vertical MP4 with real FFmpeg render progress.
+Редактор коротких вертикальных роликов. Позволяет выбрать фрагмент видео, добавить титр, посмотреть результат и скачать готовый MP4 со звуком.
 
-![Interface](docs/preview.png)
+[![Проверки](https://github.com/famelikolbut5/framecraft/actions/workflows/ci.yml/badge.svg)](https://github.com/famelikolbut5/framecraft/actions/workflows/ci.yml)
 
-[Validation notes](docs/VALIDATION.md) · [Source license](LICENSE)
+![Интерфейс Framecraft](docs/preview.png)
 
-## What it does
+## Возможности
 
-Видео - фрагмент - центральное кадрирование 9:16 - титр - MP4 с аудио. Прогресс приходит из FFmpeg.
+- Загрузка собственного видео и выбор начала и длины фрагмента.
+- Предпросмотр с титром и временной шкалой.
+- Кадрирование 9:16 и два оформления титра.
+- Экспорт через FFmpeg с прогрессом и скачиванием MP4.
 
-Upload - trim - central 9:16 crop - caption - real MP4, with FFmpeg progress and download.
+## Как устроен проект
 
-Independent portfolio demo, written from scratch. Synthetic examples only. No commercial source, proprietary prompts, client recordings or customer data.
+Обработка видео выполняется на сервере. Интерфейс получает прогресс FFmpeg и показывает готовый файл после завершения. Кадры на временной шкале и звуковая волна строятся из исходного видео.
 
-## Run locally
+**Стек:** Python, FastAPI, FFmpeg, PyAV, React, TypeScript, Vite.
 
-Python 3.12, Node 22 and pnpm 11.19.0:
+## Структура
 
-On Debian/Ubuntu, install `ffmpeg fonts-dejavu-core` first. Linux rendering needs FFmpeg with the `drawtext` filter; the Docker image includes it. `IMAGEIO_FFMPEG_EXE` can select another compatible executable.
-
-```sh
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Linux/macOS: source .venv/bin/activate
-pip install -r requirements.txt
-pnpm install --frozen-lockfile
-pnpm build
-uvicorn backend.app:app --host 127.0.0.1 --port 8000
+```text
+backend/        загрузка файлов, контроль одной активной задачи и экспорт MP4
+src/            интерфейс, состояния и работа с API
+public/         видеофрагмент для работы редактора
+tests/          проверки поведения серверной части
+docs/           запуск, проверки и материалы проекта
+Dockerfile      сборка интерфейса и серверного приложения
+compose.yml     локальный запуск с сохранением данных
 ```
 
-Open http://127.0.0.1:8000. For UI development: `pnpm dev` (API proxy expects port 8000).
+## Запуск
+
+Нужны Git и Docker. Каждый проект запускается отдельно на порту 8000.
 
 ```sh
+git clone https://github.com/famelikolbut5/framecraft.git
+cd framecraft
 docker compose up --build
 ```
 
-Local-only binding is deliberate. These demos have no user authentication and are not hardened multi-user hosted services.
+В комплекте есть фрагмент «Синтел» (Blender Foundation, CC BY 3.0); [авторство и изменения](THIRD_PARTY.md#видеофрагмент).
 
-## Checks and delivery
+Откройте [localhost:8000](http://localhost:8000). [Запуск без Docker и настройки](docs/RUNNING.md).
 
-```sh
-pip install pytest httpx
-pytest -q
-pnpm build
-```
+## Состав демоверсии
 
-GitHub Actions runs backend checks, TypeScript/build checks and Docker image build. Model credentials are never included in CI or a public image.
+Экспорт: 540 × 960, центральное кадрирование и один титр. Одна активная задача рендера; история задач хранится в памяти сервера.
 
-## Boundaries
-
-Одна задача за раз. Один титр, без интеллектуального трекинга лица. Процессы и статусы хранятся в памяти; после перезапуска готовый файл остаётся в data, но API-история не восстанавливается.
-
-The full application runs locally with its Python backend. A static build alone cannot transcribe audio, execute workflows, render video or call Codex.
-
-## Stack and attribution
-
-Python / FastAPI / React / TypeScript / Vite / Motion / Lucide. Google Fonts: Golos Text (SIL OFL). All third-party dependencies retain their own licenses. See `THIRD_PARTY.md`.
-
-MIT for independently authored source. Asset provenance and actual validation: `docs/VALIDATION.md`.
+[Проверки и результаты](docs/VALIDATION.md) | [Лицензии зависимостей и материалов](THIRD_PARTY.md) | [MIT](LICENSE)
