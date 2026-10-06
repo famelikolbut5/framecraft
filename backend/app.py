@@ -15,7 +15,7 @@ from .web import serve_web
 app = FastAPI(title='Framecraft')
 ROOT = Path(os.environ.get('DEMO_DATA',Path(__file__).resolve().parents[1]/'data'))
 ROOT.mkdir(parents=True,exist_ok=True)
-FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
+FFMPEG = os.environ.get('IMAGEIO_FFMPEG_EXE') or shutil.which('ffmpeg') or imageio_ffmpeg.get_ffmpeg_exe()
 JOBS = {}
 LOCK = threading.Lock()
 RENDER_LOCK = threading.Lock()

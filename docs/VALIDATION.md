@@ -11,3 +11,7 @@ Docker image built and started locally as a non-root user. Static UI and health 
 
 Final TypeScript/Vite build passed. Browser review at measured 1454 × 818 desktop and 443 px mobile width found no horizontal page overflow. Escape closes project dialogs. `preview.png` is an actual local application screenshot, not a design mockup.
 A real browser export produced a 5-second, 540 × 960 MP4. Thumbnails and audio peaks are derived from the supplied 8-second source.
+
+## Linux rendering
+
+The bundled Linux imageio FFmpeg lacked `drawtext` in a real container run. The Docker image and CI now install distro FFmpeg and select it explicitly; native runs prefer an installed FFmpeg. Final Docker smoke test produced and downloaded a real 2-second MP4 with a caption. The 3 backend tests also passed again on Windows.

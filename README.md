@@ -18,6 +18,8 @@ Independent portfolio demo, written from scratch. Synthetic examples only. No co
 
 Python 3.12, Node 22 and pnpm 11.19.0:
 
+On Debian/Ubuntu, install `ffmpeg fonts-dejavu-core` first. Linux rendering needs FFmpeg with the `drawtext` filter; the Docker image includes it. `IMAGEIO_FFMPEG_EXE` can select another compatible executable.
+
 ```sh
 python -m venv .venv
 # Windows: .venv\Scripts\activate
